@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace: 命名空间，唯一值，可以随意写(但是不随意写)
+               但是要求使用dao接口的全限定名称
+               全限定名称：包名+类名
+               使用copy reference复制
+-->
+<mapper namespace="com.yz.blog.dao.typeRepositoryDao">
+
+    <insert id="saveType" parameterType="com.yz.blog.Bean.Type">
+        insert into t_type values(#{id},#{name})
+    </insert>
+
+    <select id="getType" resultType="com.yz.blog.Bean.Type">
+        select id,name from t_type where id=#{id}
+    </select>
+
+    <select id="getAllType" resultType="com.yz.blog.Bean.Type">
+        select id,name from t_type
+    </select>
+
+    <update id="updateType" parameterType="com.yz.blog.Bean.Type" >
+        update t_type set name=#{name} where id=#{id}
+    </update>
+
+    <delete id="deleteType">
+        delete from t_type where id=#{id}
+    </delete>
+
+    <select id="getTypeByName" resultType="com.yz.blog.Bean.Type">
+        select id ,name from t_type where name = #{name}
+    </select>
+    <!--查询条数写死-->
+    <select id="getSizeTypes" resultMap="blogNum">
+       SELECT t.id,t.name, COUNT(b.type_id) as blogNum
+        from t_type  t
+        left join t_blog b
+        on t.id = b.type_id
+        GROUP BY t.id
+        ORDER BY blogNum desc
+        LIMIT 0, #{size}
+
+
+    </select>
+    <resultMap id="blogNum" type="com.yz.blog.Bean.Type">
+        <id property="id" column="id" />
+        <result property="name" column="name" />
+        <result property="blogNum" column="blogNum" />
+    </resultMap>
+</mapper>

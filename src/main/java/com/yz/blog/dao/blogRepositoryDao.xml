@@ -1,0 +1,238 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace: 命名空间，唯一值，可以随意写(但是不随意写)
+               但是要求使用dao接口的全限定名称
+               全限定名称：包名+类名
+               使用copy reference复制
+-->
+<mapper namespace="com.yz.blog.dao.blogRepositoryDao">
+    <insert id="saveBlog" parameterType="com.yz.blog.Bean.Blog">
+        insert into t_blog (id,title, content, first_picture, flag,
+        views, appreciation, share_statement, commentabled, published,
+        recommend, create_time, update_time, type_id, user_id,description)
+        values (#{id},#{title},#{content},#{firstPicture},#{flag},#{views},#{appreciation},
+        #{shareStatement},#{commentabled},#{published},#{recommend},#{createTime},
+        #{updateTime},#{type.id},#{user.id},#{description});
+    </insert>
+
+    <resultMap id="showblog" type="com.yz.blog.query.showBlog">
+        <id property="id" column="id"/>
+        <result property="flag" column="flag"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="typeId" column="type_id"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="recommend" column="recommend"/>
+        <result property="published" column="published"/>
+        <result property="shareStatement" column="share_statement"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="type" javaType="com.yz.blog.Bean.Type">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+    </resultMap>
+    <select id="getBlogByid" resultMap="showblog">
+         select b.id,b.flag,b.title,b.content,b.type_id,
+         b.first_picture,b.recommend,b.published,b.share_statement,
+         b.appreciation,b.commentabled from t_blog b  where  b.id = #{id};
+
+    </select>
+    <select id="getBlogById" resultMap="Blog">
+            select b.id,b.flag,b.title,b.content,b.type_id,b.views,
+               b.first_picture,b.recommend,b.published,b.share_statement,
+               b.appreciation,b.commentabled,b.description,b.update_time,u.id as uid,u.avatar ,u.username,t.id,t.name
+        from t_blog b
+        join t_user u
+        join t_type t
+        on b.user_id = u.id and t.id = b.type_id
+        where b.id = #{id}
+
+    </select>
+
+
+
+    <select id="findBlogByid" resultMap="Blog">
+         select b.id,b.flag,b.title,b.content,b.type_id,
+         b.first_picture,b.recommend,b.published,b.share_statement,
+         b.appreciation,b.commentabled,b.description from t_blog b  where  b.id = #{id};
+
+    </select>
+    <resultMap id="Blog" type="com.yz.blog.Bean.Blog">
+        <id property="id" column="id"/>
+        <result property="flag" column="flag"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="typeId" column="type_id"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="recommend" column="recommend"/>
+        <result property="published" column="published"/>
+        <result property="shareStatement" column="share_statement"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="description" column="description" />
+        <result property="views" column="views" />
+        <association property="type" javaType="com.yz.blog.Bean.Type">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="user" javaType="com.yz.blog.Bean.User">
+            <id property="id" column="uid"/>
+            <result property="username" column="username"/>
+            <result property="avatar" column="avatar"/>
+
+        </association>
+    </resultMap>
+
+    <!--后台查询文章管理列表-->
+    <select id="getAllBlogQuery" resultMap="showblog">
+        select b.id,b.title,b.update_time,b.recommend,b.published,b.type_id,t.id,t.name
+        from t_blog b
+        left outer join t_type t
+        on b.type_id = t.id order by b.update_time desc
+    </select>
+
+    <select id="getListBlog" resultMap="Blog">
+        select b.id,b.flag,b.title,b.content,b.type_id,b.views,
+               b.first_picture,b.recommend,b.published,b.share_statement,
+               b.appreciation,b.commentabled,b.description,b.update_time,u.id as uid,u.avatar ,u.username,t.id,t.name
+        from t_blog b
+        join t_user u
+        join t_type t
+        on b.user_id = u.id and t.id = b.type_id
+
+
+    </select>
+
+    <update id="updateBlog" parameterType="com.yz.blog.Bean.Blog" >
+        update t_blog set published = #{published},flag = #{flag} ,
+        title = #{title}, content = #{content}, type_id = #{typeId},
+        first_picture = #{firstPicture}  , recommend = #{recommend} ,
+        share_statement = #{shareStatement}, appreciation = #{appreciation},
+        commentabled = #{commentabled} ,update_time = #{updateTime} ,description = #{description}
+        where id = #{id};
+    </update>
+
+    <delete id="deleteBlog">
+        delete from t_blog where id = #{id}
+    </delete>
+
+    <select id="getByNameBlog" resultType="com.yz.blog.Bean.Blog">
+        select id ,name from t_blog where name = #{name}
+    </select>
+
+    <!--条件查询：title，type，推荐-->
+    <select id="getListBlogByTitleAndTypeIdorRecommend" parameterType="com.yz.blog.query.showBlog" resultMap="showblog">
+        select b.title,b.recommend,b.update_time,b.published,t.name
+        from t_blog b, t_type t
+        <where>
+            <if test="1 == 1">
+                b.type_id = t.id
+            </if>
+            <if test="typeId != null">
+                and b.type_Id = #{typeId}
+            </if>
+            <if test="title != null">
+                and b.title like "%" #{title} "%"
+            </if>
+            <if test="recommend == 1">
+                and b.recommend = #{recommend}
+            </if>
+        </where>
+    </select>
+
+    <!--查询5条推荐的博客，根据时间排序-->
+    <select id="getRecommendedBlogs" resultMap="Blog">
+         select * from t_blog
+         where t_blog.recommend = true
+         order by t_blog.update_time desc limit 0,5;
+    </select>
+
+    <!--查询3条推荐的博客，根据时间排序-->
+    <select id="getRecommendedBlogsSize3" resultMap="Blog">
+         select * from t_blog
+         where t_blog.recommend = true
+         order by t_blog.update_time desc limit 0,3;
+    </select>
+
+    <!--导航栏的search查询-->
+    <select id="getSearchBlog" resultMap="Blog" >
+        select b.id,b.flag,b.title,b.content,b.type_id,
+               b.first_picture,b.recommend,b.published,b.share_statement,
+               b.appreciation,b.commentabled,b.description,b.update_time,u.id as uid,u.avatar ,u.username,t.id,t.name
+        from t_blog b
+        join t_user u
+        join t_type t
+        on b.user_id = u.id and t.id = b.type_id
+        where b.content like '%' #{query} '%'  or b.title like '%' #{query} '%'
+    </select>
+
+    <!--更新浏览次数-->
+    <update id="updateViews" >
+        update t_blog b set b.views = b.views + 1 where b.id =#{id}
+    </update>
+    <!--只给types页面用，是一个重载方法。-->
+    <select id="getListBlogByTypeId" resultMap="Blog">
+          select b.id,b.flag,b.title,b.content,b.type_id,b.views,
+               b.first_picture,b.recommend,b.published,b.share_statement,
+               b.appreciation,b.commentabled,b.description,b.update_time,u.id as uid,u.avatar ,u.username,t.id,t.name
+        from t_blog b
+        join t_user u
+        join t_type t
+        on b.user_id = u.id and t.id = b.type_id
+        where b.type_id = #{typeId}
+    </select>
+
+    <select id="findGroupYears"  resultType="java.lang.String">
+        select date_format(update_time,'%Y') as year from t_blog  GROUP BY year ORDER BY year desc
+    </select>
+
+    <select id="findBlogByYear" resultMap="archiveShowBlog">
+
+    select *
+    from (select *,date_format(update_time,'%Y') as year,date_format(update_time,'%M-%d') as m_d from t_blog) as b
+    WHERE b.year = #{year}
+    order by year desc , m_d desc
+
+    </select>
+
+    <resultMap id="archiveShowBlog" type="com.yz.blog.query.archiveShowBlog">
+        <id property="id" column="id"/>
+        <result property="flag" column="flag"/>
+        <result property="title" column="title"/>
+        <result property="content" column="content"/>
+        <result property="typeId" column="type_id"/>
+        <result property="firstPicture" column="first_picture"/>
+        <result property="recommend" column="recommend"/>
+        <result property="published" column="published"/>
+        <result property="shareStatement" column="share_statement"/>
+        <result property="appreciation" column="appreciation"/>
+        <result property="commentabled" column="commentabled"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="description" column="description" />
+        <result property="views" column="views" />
+        <result property="year" column="year" />
+        <result property="monthDay" column="m_d" />
+        <association property="type" javaType="com.yz.blog.Bean.Type">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+        </association>
+        <association property="user" javaType="com.yz.blog.Bean.User">
+            <id property="id" column="uid"/>
+            <result property="username" column="username"/>
+            <result property="avatar" column="avatar"/>
+
+        </association>
+    </resultMap>
+
+    <!--查询博客数量-->
+
+    <select id="selectBlogNum" resultType="java.lang.Integer">
+        select count(id) from t_blog
+    </select>
+</mapper>

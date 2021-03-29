@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace: 命名空间，唯一值，可以随意写(但是不随意写)
+               但是要求使用dao接口的全限定名称
+               全限定名称：包名+类名
+               使用copy reference复制
+-->
+<mapper namespace="com.yz.blog.dao.commentRepositoryDao">
+
+    <insert id="saveComment" >
+        insert into t_comment (username,email,content,avatar,create_time,blog_id,parent_comment_id,adminComment)
+        values (#{username},#{email},#{content},#{avatar},#{createTime},#{blog.id},#{parentComment.id},#{adminComment});
+    </insert>
+
+
+    <select id="getListCommentByBlogId" resultMap="comments">
+        select * from t_comment where blog_id = #{blogId} order by  create_time  desc
+    </select>
+
+    <resultMap id="comments" type="com.yz.blog.Bean.Comment">
+        <id property="id" column="id" />
+        <result property="avatar" column="avatar" />
+        <result property="content" column="content" />
+        <result property="createTime" column="create_time" />
+        <result property="email" column="email" />
+        <result property="username" column="username" />
+        <result property="adminComment" column="adminComment"/>
+        <association property="blog" javaType="com.yz.blog.Bean.Blog">
+                <id property="id" column="blog_id" />
+        </association>
+        <association property="parentComment" javaType="com.yz.blog.Bean.Comment">
+                <id property="id" column="parent_comment_id" />
+        </association>
+    </resultMap>
+
+    <!--根据父类评论的id，得到该父类评论-->
+    <select id="getPrentCommentById" resultType="com.yz.blog.Bean.Comment">
+        select * from t_comment where id = #{prentCommentId}
+    </select>
+
+    <!--查询所有父类评论，按照时间升序-->
+    <select id="findByBlogIdParentIdNull" resultMap="comments">
+        select *
+        from t_comment c
+        where c.blog_id = #{blogId} and c.parent_comment_id is null
+
+    </select>
+
+    <!--查询一级子评论-->
+    <select id="findByBlogIdParentIdNotNull" resultMap="comments">
+        select *
+        from t_comment c
+        where c.blog_id = #{blogId} and c.parent_comment_id = #{id}
+        order by c.create_time desc
+    </select>
+
+    <!--查询二级子评论-->
+    <select id="findByBlogIdAndReplayId" resultMap="comments">
+        select *
+        from t_comment c
+        where c.blog_id = #{blogId} and c.parent_comment_id = #{childId}
+        order by c.create_time desc
+    </select>
+
+</mapper>

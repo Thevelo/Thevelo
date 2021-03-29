@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--
+    namespace: 命名空间，唯一值，可以随意写(但是不随意写)
+               但是要求使用dao接口的全限定名称
+               全限定名称：包名+类名
+               使用copy reference复制
+-->
+<mapper namespace="com.yz.blog.dao.tagRepositoryDao">
+
+    <insert id="saveTag" parameterType="com.yz.blog.Bean.Tag">
+        insert into t_tag values(#{id},#{name})
+    </insert>
+
+    <select id="getTag" resultType="com.yz.blog.Bean.Tag">
+        select id,name from t_tag where id=#{id}
+    </select>
+
+    <select id="getAllTag" resultType="com.yz.blog.Bean.Tag">
+        select id,name from t_tag
+    </select>
+
+    <update id="updateTag" parameterType="com.yz.blog.Bean.Tag" >
+        update t_tag set name=#{name} where id=#{id}
+    </update>
+
+    <delete id="deleteTag">
+        delete from t_tag where id=#{id}
+    </delete>
+
+    <select id="getTagByName" resultType="com.yz.blog.Bean.Tag">
+        select id ,name from t_tag where name = #{name}
+    </select>
+
+    <select id="findAllTag" resultType="com.yz.blog.Bean.Tag">
+        select id, name from t_tag where id in
+        <foreach collection="list" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

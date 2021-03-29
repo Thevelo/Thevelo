@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="admin/_fragments :: head(~{::title})">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+    <title>发布博客</title>
+    <link rel="stylesheet" href="../../static/css/me.css" >
+</head>
+<body>
+
+    <!--导航-->
+    <nav th:replace="/admin/_fragments :: menu(0)" class="ui attached segment m-padded-tb-mini m-shadow-small">
+        <div class="ui container" >
+            <div class="ui   secondary stackable menu">
+                <h2 class="ui teal header item">管理后台</h2>
+                <a href="#" class="active item"><i class="home icon" > </i>博客</a>
+                <a href="#" class="item"><i class="idea icon" > </i>分类</a>
+                <a href="#" class="item"><i class="tags icon" > </i>标签</a>
+                <div class="right item">
+                    <div class="ui icon input" >
+                        <input type="text" placeholder="Search..">
+                        <i class="search link icon" ></i>
+                    </div>
+                </div>
+                <div class="right menu">
+                    <div class="ui dropdown item">
+                        <div class="text">
+                            <!--th:src = "@{${session.user.avatar}}" 后续添加-->
+                            <img src="https://unsplash.it/100/100?image=1005" th:src = "@{${session.user.avatar}}" class="ui avatar image" alt="">
+                            <span th:text="${session.user.username}">Thevelo</span>
+
+                        </div>
+
+                        <div class="menu">
+                            <a href="../about.html" class="item"><i class="user icon"></i> 个人主页</a>
+                            <a href="../about.html" class="item"><i class="cog icon"></i>设置</a>
+                            <a href="#" class="item" th:href="@{/admin/logout}"><i class="x icon"></i> 退出</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+       <!-- <a href="#" class="ui  icon button m-right-top">
+            <i class="sidebar icon"></i>
+        </a>-->
+    </nav>
+
+
+
+    <!--中间内容-->
+    <div class="m-container-small  m-padded-tb-large">
+        <div class="ui container">
+            <div class="ui success large message">
+                <h3>Hi</h3>
+                <p>Thevelo 欢迎登录</p>
+            </div>
+            <img class="ui rounded bordered fluid image" src="https://unsplash.it/800/600?image=1005" alt="">
+        </div>
+    </div>
+
+    <!--文档页脚-->
+    <footer th:replace="admin/_fragments :: footer" class="ui  inverted vertical segment m-padded-tb-massive">
+        <div class="ui center aligned container" >
+            <div class="ui inverted divided grid">
+                <div class="three wide column">
+                    <img src="../../static/images/wechat.jpg" class="ui round image" style="width: 120px">
+                </div>
+                <div class="three wide column m-opacity-mini">
+                    <h4 class="ui inverted header">博客</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">用户故事</a>
+                        <a href="#" class="item">用户故事</a>
+                        <a href="#" class="item">用户故事</a>
+                    </div>
+                </div>
+                <div class="three wide column m-opacity-mini">
+                    <h4 class="ui inverted header">联系我</h4>
+                    <div class="ui inverted link list">
+                        <a href="#" class="item">QQ：503184429</a>
+                        <a href="#" class="item">Email：Thevelo@163.com</a>
+
+                    </div>
+                </div>
+
+                <div class="seven wide column">
+                    <h4 class="ui inverted header m-opacity-mini">自我介绍</h4>
+                    <p class="m-text-thin m-text-spaced m-opacity-mini">这是我的个人博客。。。。。。。。。。。。。。。。。。</p>
+                </div>
+            </div>
+            <div class="ui inverted section divider"></div>
+            <p class="m-text-thin m-text-spaced m-opacity-tiny">2020-2021@Thevelo</p>
+        </div>
+
+    </footer>
+
+
+
+    <!--/*/<th:block th:replace="_fragments :: script">/*/-->
+    <script src="https://lib.baomitu.com/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+    <!--/*/</th:block>/*/-->
+    <script>
+        $(".ui.dropdown").dropdown({
+        });
+    </script>
+</body>
+</html>
