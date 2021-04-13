@@ -14,9 +14,9 @@ public class ArchiveShowController {
 
     @GetMapping("/archives")
     public String archives(Model model){
-
+        System.out.println(123);
         model.addAttribute("asd",blogService.archiveBlog());
-        model.addAttribute("blogNum",blogService.selectBlogNum());
+        model.addAttribute("123",blogService.selectBlogNum());
         return "archives";
     }
 }
