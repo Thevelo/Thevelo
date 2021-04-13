@@ -15,7 +15,7 @@ public class ArchiveShowController {
     @GetMapping("/archives")
     public String archives(Model model){
         System.out.println(123);
-        model.addAttribute("asd",blogService.archiveBlog());
+        model.addAttribute("a123sd",blogService.archiveBlog());
         model.addAttribute("123",blogService.selectBlogNum());
         System.out.println("hello world");
         model.addAttribute("123",blogService.archiveBlog());
